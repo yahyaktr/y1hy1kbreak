@@ -1,0 +1,32 @@
+name: iOS IPA Derleme Otomasyonu
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: macos-12
+
+    steps:
+    - name: Kodlari Depodan Cek
+      uses: actions/checkout@v3
+
+    - name: iOS SDK ve Xcode Ayarla
+      run: |
+        sudo xcode-select -s /Applications/Xcode_14.2.app
+        
+    - name: Klasor Yapisini Hazirla ve Derle
+      run: |
+        mkdir -p Payload
+        xcrun -sdk iphoneos clang++ main.cpp -o Payload/y1hy1kbreak -arch arm64
+        
+    - name: IPA Olarak Sikistir (Paketle)
+      run: |
+        zip -r y1hy1kbreak.ipa Payload/
+
+    - name: Hazir IPA Yukle ve Teslim Et
+      uses: actions/upload-artifact@v3
+      with:
+        name: y1hy1kbreak-Ozel-Sürüm
+        path: y1hy1kbreak.ipa
